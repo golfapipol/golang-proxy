@@ -2,13 +2,16 @@ package main
 
 import (
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 )
 
 const port = ":4000"
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		println("--->", port, req.URL.String())
+	proxy := httputil.NewSingleHostReverseProxy(&url.URL{
+		Scheme: "http",
+		Host:   "localhost:3300",
 	})
-	http.ListenAndServe(port, nil)
+	http.ListenAndServe(port, proxy)
 }
